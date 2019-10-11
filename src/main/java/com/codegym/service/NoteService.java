@@ -4,6 +4,9 @@ import com.codegym.model.Note;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 public interface NoteService {
@@ -13,4 +16,6 @@ public interface NoteService {
     List<Integer> getNumberPage(Page<Note> notes);
     Note findById(long id);
     Iterable<Note> findAll();
+    Page<Note> findAllByTitle(String title, Pageable pageable);
+    File exportExcel() throws IOException;
 }

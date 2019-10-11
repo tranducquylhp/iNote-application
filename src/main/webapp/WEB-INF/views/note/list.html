@@ -7,6 +7,9 @@
 <body>
 <a href="/note/create">Create new note</a>
 <h1>Notes</h1>
+<th:block th:if="${message}">
+    <p th:text="${message}"></p>
+</th:block>
 <form>
     Search by title:
     <input name="s" type="text"/>
@@ -35,6 +38,7 @@
         </tr>
     </th:block>
 </table>
+<a th:href="@{/note/excel}">Export Excel</a>
 <div>
     <span th:each="notePage: ${notePages}">
         <a th:href="@{'/notes'(page=${notePage})}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Note list</title>
+</head>
+<body>
+<a href="/note/create">Create new note</a>
+<h1>Notes</h1>
+<form>
+    Search by title:
+    <input name="s" type="text"/>
+    <input type="submit" value="Search"/>
+</form>
+<br/>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Content</th>
+        <th>Note Type</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        <th>View</th>
+    </tr>
+    <th:block th:each="note : ${notes}">
+        <tr>
+            <td th:text="${note.id}"></td>
+            <td th:text="${note.title}"></td>
+            <td th:text="${note.content}"></td>
+            <td th:text="${note.noteType.name}"></td>
+            <td><a th:href="@{/note/edit/__${note.id}__ }">Edit</a></td>
+            <td><a th:href="@{/note/delete/__${note.id}__ }">Delete</a></td>
+            <td><a th:href="@{/note/view/__${note.id}__}">View</a></td>
+        </tr>
+    </th:block>
+</table>
+<div>
+    <span th:each="notePage: ${notePages}">
+        <a th:href="@{'/notes'(page=${notePage})}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
+        <a th:if="${notePage == notes.number}" th:text="${'['+(notePage + 1)+']'}"></a>
+    </span>
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Note view</title>
+</head>
+<body>
+<p>
+    <a href="/notes">Note list</a>
+</p>
+<h1>Employee view</h1>
+<form th:object="${note}">
+    <input th:type="hidden" name="id" th:field="*{id}">
+    <table>
+        <tr>
+            <td>Title:</td>
+            <td th:text="*{title}"></td>
+        </tr>
+        <tr>
+            <td>Content</td>
+            <td th:text="*{content}"></td>
+        </tr>
+        <tr>
+            <td>Note Type:</td>
+            <td th:text="*{noteType.name}"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.codegym.service.impl;
 
 import com.codegym.model.Note;
 import com.codegym.repository.NoteRepository;
+import com.codegym.repository.NoteTypeRepository;
 import com.codegym.service.NoteService;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -14,16 +15,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NoteServiceImpl implements NoteService {
     @Autowired
     private NoteRepository noteRepository;
+
+    @Autowired
+    private NoteTypeRepository noteTypeRepository;
+
     @Override
     public Page<Note> findAll(Pageable pageable) {
         return noteRepository.findAll(pageable);
@@ -43,7 +45,7 @@ public class NoteServiceImpl implements NoteService {
     public List<Integer> getNumberPage(Page<Note> notes) {
         int notePage = notes.getTotalPages();
         List<Integer> notePages = new ArrayList<>();
-        for (int i=0; i<notePage; i++) {
+        for (int i = 0; i < notePage; i++) {
             notePages.add(i);
         }
         return notePages;
@@ -60,8 +62,8 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public Page<Note> findAllByTitle(String title, Pageable pageable) {
-        return noteRepository.findAllByTitle(title, pageable);
+    public Page<Note> findAllByTitleContaining(String title, Pageable pageable) {
+        return noteRepository.findAllByTitleContaining(title, pageable);
     }
 
     //export excel
@@ -132,5 +134,36 @@ public class NoteServiceImpl implements NoteService {
         workbook.write(outFile);
         System.out.println("Created file: " + file.getAbsolutePath());
         return file;
+    }
+
+    //Read txt
+    @Override
+    public void saveNoteInFileTxt() {
+        BufferedReader br = null;
+
+        try {
+            br = new BufferedReader(new FileReader("C:\\demo\\note.txt"));
+
+            String textInALine = br.readLine();
+
+            while ((textInALine = br.readLine()) != null) {
+                System.out.println(textInALine);
+                String[] noteString = textInALine.split(";");
+                Note note = new Note();
+                note.setTitle(noteString[0]);
+                note.setContent(noteString[1]);
+                long idNoteType = Long.parseLong(noteString[2]);
+                note.setNoteType(noteTypeRepository.findOne(idNoteType));
+                noteRepository.save(note);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

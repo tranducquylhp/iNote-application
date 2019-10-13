@@ -10,11 +10,17 @@
 <th:block th:if="${message}">
     <p th:text="${message}"></p>
 </th:block>
+<th:block th:if="${titleSearch}">
+    <p>
+        <a href="/notes">Note list full</a>
+    </p>
+</th:block>
 <form>
     Search by title:
     <input name="s" type="text"/>
     <input type="submit" value="Search"/>
 </form>
+<a th:href="@{/note/readTxt}">Insert note from .txt file</a>
 <br/>
 <table border="1">
     <tr>
@@ -39,9 +45,15 @@
     </th:block>
 </table>
 <a th:href="@{/note/excel}">Export Excel</a>
-<div>
+<div th:if="${titleSearch}">
     <span th:each="notePage: ${notePages}">
-        <a th:href="@{'/notes'(page=${notePage})}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
+        <a th:href="@{'/notes?page=' + ${notePage} + '&s=' + ${titleSearch}}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
+        <a th:if="${notePage == notes.number}" th:text="${'['+(notePage + 1)+']'}"></a>
+    </span>
+</div>
+<div th:if="${titleSearch} == null">
+    <span th:each="notePage: ${notePages}">
+        <a th:href="@{'/notes?page=' + ${notePage}}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
         <a th:if="${notePage == notes.number}" th:text="${'['+(notePage + 1)+']'}"></a>
     </span>
 </div>

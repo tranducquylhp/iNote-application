@@ -13,4 +13,9 @@ public class NoteTypeServiceImpl implements NoteTypeService {
     public Iterable<NoteType> findAll() {
         return noteTypeRepository.findAll();
     }
+
+    @Override
+    public NoteType findById(long id) {
+        return noteTypeRepository.findOne(id);
+    }
 }

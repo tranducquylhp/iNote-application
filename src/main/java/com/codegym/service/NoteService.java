@@ -11,11 +11,20 @@ import java.util.List;
 
 public interface NoteService {
     Page<Note> findAll(Pageable pageable);
+
     void save(Note note);
+
     void delete(Long noteId);
+
     List<Integer> getNumberPage(Page<Note> notes);
+
     Note findById(long id);
+
     Iterable<Note> findAll();
-    Page<Note> findAllByTitle(String title, Pageable pageable);
+
+    Page<Note> findAllByTitleContaining(String title, Pageable pageable);
+
     File exportExcel() throws IOException;
+
+    void saveNoteInFileTxt();
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Note list</title>
+</head>
+<body>
+
+<p>
+    <a href="/notes">Note list</a>
+</p>
+<h1>
+    Name: <span th:text="${noteType.name}"></span>
+    <br>
+    Description: <span th:text="${noteType.description}"></span>
+</h1>
+Select Note Type
+<form th:action="@{/note/noteType}" method="get">
+    <select name = "noteTypeId">
+        <option th:each="p : ${noteTypes}" th:value="${p.id}" th:text="${p.name}"></option>
+    </select>
+    <input type="submit" value="Search">
+</form>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Content</th>
+        <th>Note Type</th>
+        <th>Edit</th>
+        <th>Delete</th>
+        <th>View</th>
+    </tr>
+    <th:block th:each="note : ${notes}">
+        <tr>
+            <td th:text="${note.id}"></td>
+            <td th:text="${note.title}"></td>
+            <td th:text="${note.content}"></td>
+            <td th:text="${note.noteType.name}"></td>
+            <td><a th:href="@{/note/edit/__${note.id}__ }">Edit</a></td>
+            <td><a th:href="@{/note/delete/__${note.id}__ }">Delete</a></td>
+            <td><a th:href="@{/note/view/__${note.id}__}">View</a></td>
+        </tr>
+    </th:block>
+</table>
+
+
+<div>
+    <span th:each="notePage: ${notePages}">
+        <a th:href="@{'/note/noteType?noteTypeId=' + ${noteType.id} + '&page='+${notePage}}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
+        <a th:if="${notePage == notes.number}" th:text="${'['+(notePage + 1)+']'}"></a>
+    </span>
+</div>
+
+</body>
+</html>

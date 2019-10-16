@@ -4,18 +4,26 @@ import com.codegym.model.Note;
 import com.codegym.model.NoteType;
 import com.codegym.service.NoteService;
 import com.codegym.service.NoteTypeService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +72,7 @@ public class NoteController {
     public ModelAndView saveNote(@ModelAttribute Note note) {
         noteService.save(note);
         ModelAndView modelAndView = new ModelAndView("redirect:/notes");
+        modelAndView.addObject("message","Create successful");
         return modelAndView;
     }
 
@@ -79,6 +88,7 @@ public class NoteController {
     public ModelAndView editNote(@ModelAttribute("note") Note note) {
         noteService.save(note);
         ModelAndView modelAndView = new ModelAndView("redirect:/notes");
+        modelAndView.addObject("message","Edit successful");
         return modelAndView;
     }
 
@@ -93,6 +103,7 @@ public class NoteController {
     public ModelAndView deleteNote(@ModelAttribute Note note) {
         noteService.delete(note.getId());
         ModelAndView modelAndView = new ModelAndView("redirect:/notes");
+        modelAndView.addObject("message", "Delete successfull");
         return modelAndView;
     }
 
@@ -116,6 +127,48 @@ public class NoteController {
     public ModelAndView readTxt(){
         noteService.saveNoteInFileTxt();
         ModelAndView modelAndView = new ModelAndView("redirect:/notes","message","Inserts Successful");
+        return modelAndView;
+    }
+
+    @GetMapping("/note/noteType")
+    public ModelAndView searchByNoteType(@RequestParam("noteTypeId") String noteTypeId, @PageableDefault(value = 2) Pageable pageable){
+        ModelAndView modelAndView = new ModelAndView("/note/noteType");
+
+        long id = Long.parseLong(noteTypeId);
+        NoteType noteType = noteTypeService.findById(id);
+        Page<Note> notes = noteService.findAllByNoteType(noteType, pageable);
+        modelAndView.addObject("noteType", noteType);
+
+        modelAndView.addObject("notes",notes);
+
+        List<Integer> notePages = noteService.getNumberPage(notes);
+        modelAndView.addObject("notePages", notePages);
+        return modelAndView;
+    }
+
+    @GetMapping("/note/writeJSON")
+    public ModelAndView writeJSON(){
+
+        noteService.writeJSON();
+        ModelAndView modelAndView = new ModelAndView("redirect:/notes");
+        modelAndView.addObject("message","Export successful");
+        return modelAndView;
+    }
+
+    @GetMapping("/note/importJSON")
+    public ModelAndView importJSON(){
+        noteService.importJSON();
+        ModelAndView modelAndView = new ModelAndView("redirect:/notes");
+        modelAndView.addObject("message","Import successful");
+        return modelAndView;
+    }
+
+    @GetMapping("/note/importExcel")
+    public ModelAndView importExcel() throws IOException {
+        noteService.importExcel();
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/notes");
+        modelAndView.addObject("message","Import successful");
         return modelAndView;
     }
 }

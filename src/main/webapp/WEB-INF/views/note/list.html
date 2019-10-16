@@ -7,20 +7,45 @@
 <body>
 <a href="/note/create">Create new note</a>
 <h1>Notes</h1>
+
 <th:block th:if="${message}">
-    <p th:text="${message}"></p>
+    <p th:text="${message}" style="color: red"></p>
 </th:block>
+
 <th:block th:if="${titleSearch}">
     <p>
         <a href="/notes">Note list full</a>
     </p>
 </th:block>
+
 <form>
     Search by title:
     <input name="s" type="text"/>
     <input type="submit" value="Search"/>
 </form>
-<a th:href="@{/note/readTxt}">Insert note from .txt file</a>
+
+<p>
+    <a th:href="@{/note/readTxt}">Insert note from .txt file</a>
+</p>
+
+<p>
+    <a th:href="@{/note/importJSON}">Insert note from .json file</a>
+</p>
+
+<p>
+    <a th:href="@{/note/importExcel}">Insert note from .xlsx file</a>
+</p>
+
+<h3>
+Select Note Type
+<form th:action="@{/note/noteType}" method="get">
+    <select name = "noteTypeId">
+        <option th:each="p : ${noteTypes}" th:value="${p.id}" th:text="${p.name}"></option>
+    </select>
+    <input type="submit" value="Search">
+</form>
+</h3>
+
 <br/>
 <table border="1">
     <tr>
@@ -44,18 +69,26 @@
         </tr>
     </th:block>
 </table>
-<a th:href="@{/note/excel}">Export Excel</a>
+<p>
+    <a th:href="@{/note/excel}">Export Excel</a>
+</p>
+
+<p>
+    <a th:href="@{/note/writeJSON}">Export JSON</a>
+</p>
 <div th:if="${titleSearch}">
     <span th:each="notePage: ${notePages}">
         <a th:href="@{'/notes?page=' + ${notePage} + '&s=' + ${titleSearch}}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
         <a th:if="${notePage == notes.number}" th:text="${'['+(notePage + 1)+']'}"></a>
     </span>
 </div>
+
 <div th:if="${titleSearch} == null">
     <span th:each="notePage: ${notePages}">
         <a th:href="@{'/notes?page=' + ${notePage}}" th:text="${notePage + 1}" th:if="${notePage != notes.number}"></a>
         <a th:if="${notePage == notes.number}" th:text="${'['+(notePage + 1)+']'}"></a>
     </span>
 </div>
+
 </body>
 </html>

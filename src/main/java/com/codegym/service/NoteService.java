@@ -1,6 +1,7 @@
 package com.codegym.service;
 
 import com.codegym.model.Note;
+import com.codegym.model.NoteType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,7 +25,15 @@ public interface NoteService {
 
     Page<Note> findAllByTitleContaining(String title, Pageable pageable);
 
+    Page<Note> findAllByNoteType(NoteType noteType, Pageable pageable);
+
     File exportExcel() throws IOException;
 
     void saveNoteInFileTxt();
+
+    void writeJSON();
+
+    void importExcel() throws IOException;
+
+    void importJSON();
 }
